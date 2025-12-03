@@ -1,10 +1,8 @@
-
-
 name: Build and Deploy to Kubernetes
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
@@ -22,7 +20,7 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        
+
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -70,15 +68,15 @@ jobs:
 
       - name: Update manifests with new image tag
         env:
-            REGISTRY_DOMAIN: ${{ secrets.REGISTRY_DOMAIN }}
-            IMAGE_TAG: ${{ needs.build-and-push-image.outputs.tag }}
+          REGISTRY_DOMAIN: ${{ secrets.REGISTRY_DOMAIN }}
+          IMAGE_TAG: ${{ needs.build-and-push-image.outputs.tag }}
         run: |
           echo "Updating manifests with image tag: $IMAGE_TAG"
 
           # Команда замены
           sed -i "s|^\(\s*image:\s*\).*$|\1${REGISTRY_DOMAIN}/t24-server:${IMAGE_TAG}|" t24_server/k8s/deployment.yaml
           sed -i "s|^\(\s*image:\s*\).*$|\1${REGISTRY_DOMAIN}/t24-server:${IMAGE_TAG}|" t24_server/k8s/job.yaml
-          
+
           echo "Updated deployment image:"
           grep "image:" t24_server/k8s/deployment.yaml
           echo "Updated job image:"
@@ -94,16 +92,14 @@ jobs:
           # Удаляем старую миграцию и запускаем новую
           kubectl delete job serverpod-migration-job-t24 --ignore-not-found=true
           kubectl apply -f t24_server/k8s/job.yaml
-          
+
           # Ждем завершения миграции
           kubectl wait --for=condition=complete job/serverpod-migration-job-t24 --timeout=5m
 
       - name: Deploy main application
         run: |
           kubectl apply -f t24_server/k8s/deployment.yaml
-          kubectl rollout status deployment/t24-server-deployment --timeout=3m
-          
+          kubectl rollout status deployment/t24-server-deployment --timeout=5m
+
           # Показываем финальный статус
           kubectl get pods -l app=t24-server
-    
-    
