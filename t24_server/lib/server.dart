@@ -7,7 +7,6 @@ import 'src/generated/endpoints.dart';
 import 'package:t24_server/src/birthday_reminder.dart';
 import 'src/util/server_init.dart';
 
-
 enum FutureCallNames {
   birthdayReminder,
 }
@@ -28,7 +27,6 @@ void run(List<String> args) async {
     // Игнорируем любые ошибки парсинга на этом этапе
   }
 
-  
   // ------------------------------------------
 
   // ВАЖНО: Устанавливаем AuthConfig ДО любых операций с auth
@@ -51,43 +49,41 @@ void run(List<String> args) async {
     authenticationHandler: auth.authenticationHandler,
   );
 
-  // if (!isMaintenance) {
-  //   // Setup a default page at the web root.
-  //   pod.webServer.addRoute(RouteRoot(), '/');
-  //   pod.webServer.addRoute(RouteRoot(), '/index.html');
-  //   // Serve all files in the /static directory.
-  //   pod.webServer.addRoute(RouteStaticDirectory(serverDirectory: 'static', basePath: '/'),'/*',);
-  // }
+  if (!isMaintenance) {
+    // Setup a default page at the web root.
+    pod.webServer.addRoute(RootRoute(), '/');
+    pod.webServer.addRoute(RootRoute(), '/index.html');
+  }
 
   // Start the server.
   await pod.start();
 
   // Инициализация БД ПОСЛЕ запуска сервера и установки AuthConfig
   print('=== STARTING DATABASE INITIALIZATION ===');
-  
+
   try {
     // Создаем временную сессию для выполнения операций с БД.
     final session = await pod.createSession(enableLogging: true);
-    
+
     print('Session created, starting ServerInit.run()...');
-    
+
     // Запускаем наш скрипт инициализации.
     await ServerInit.run(session);
-    
+
     print('ServerInit.run() completed');
-    
+
     // Закрываем сессию.
     await session.close();
-    
+
     print('=== DATABASE INITIALIZATION COMPLETED ===');
-  } catch(e, st) {
+  } catch (e, st) {
     print('=== DATABASE INITIALIZATION FAILED ===');
     print('Error: $e');
     print('Stack trace: $st');
-    
+
     // Логируем любую ошибку, которая могла произойти во время инициализации.
     pod.logVerbose(
-      'Failed to seed initial data: $e \n$st', 
+      'Failed to seed initial data: $e \n$st',
     );
   }
 

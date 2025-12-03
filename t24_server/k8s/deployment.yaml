@@ -68,14 +68,14 @@ spec:
 
           readinessProbe:
             tcpSocket:
-              port: 8080 # API server вместо web server
+              port: 8082 # WebServer (теперь включен)
             initialDelaySeconds: 45 # Увеличено с 20 для учета времени инициализации БД
             periodSeconds: 10 # Проверяем каждые 10 секунд
             failureThreshold: 3 # 3 неудачных попытки = под не ready
 
           livenessProbe:
             tcpSocket:
-              port: 8080 # API server вместо web server
+              port: 8082 # WebServer (теперь включен)
             initialDelaySeconds: 90 # Увеличено с 60
             periodSeconds: 20 # Проверяем каждые 20 секунд
             failureThreshold: 3 # 3 неудачных попытки = перезапуск пода
