@@ -3,24 +3,24 @@ project:
   name: "t24"
   
 server:
-  ip: "176.124.208.46"
+  ip: "89.223.71.39"
   http_port: "80:80"
   https_port: "443:443"
   domain: "my-points.ru"
   subdomain:
-    api: "api4"
-    web: "web4"
-    insights: "insights4"
+    api: "api24"
+    web: "web24"
+    insights: "insights24"
   email: "frolprank@gmail.com"
   
 database:
-  host: "192.168.0.6"
+  host: "192.168.0.7"
   port: "5432"
   name: "t24_db"
   user: "t24_user"  
   
 reddis:
-  host: "192.168.0.7"
+  host: "192.168.0.8"
   port: "6379"
   user: "default"
   

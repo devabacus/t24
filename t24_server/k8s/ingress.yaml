@@ -1,0 +1,48 @@
+
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: t24-server-ingress
+  annotations:    
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" 
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - api24.my-points.ru
+    - web24.my-points.ru
+    - insights24.my-points.ru
+    secretName: serverpod-tls-t24
+  rules:
+  - host: "api24.my-points.ru"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: t24-server-service
+            port:
+              name: api
+  - host: "web24.my-points.ru"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: t24-server-service
+            port:
+              name: web
+  - host: "insights24.my-points.ru"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: t24-server-service
+            port:
+              name: insights
+    
