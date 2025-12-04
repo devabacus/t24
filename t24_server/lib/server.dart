@@ -55,11 +55,11 @@ void run(List<String> args) async {
     // Setup a default page at the web root.
     pod.webServer.addRoute(RootRoute(), '/');
     pod.webServer.addRoute(RootRoute(), '/index.html');
-    pod.webServer.addRoute(
-      StaticRoute.directory(Directory('static')),
-      '/*',
-    );
-  }
+  //   pod.webServer.addRoute(
+  //   //   StaticRoute.directory(Directory('static')),
+  //   //   '/*',
+  //   // );
+  // }
 
   // Start the server.
   await pod.start();
