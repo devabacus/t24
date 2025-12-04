@@ -1,4 +1,6 @@
 // manifest: startProject
+import 'dart:io';
+
 import 'package:serverpod/serverpod.dart';
 import 'package:t24_server/src/web/routes/root.dart';
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as auth;
@@ -53,6 +55,10 @@ void run(List<String> args) async {
     // Setup a default page at the web root.
     pod.webServer.addRoute(RootRoute(), '/');
     pod.webServer.addRoute(RootRoute(), '/index.html');
+    pod.webServer.addRoute(
+      StaticRoute.directory(Directory('static')),
+      '/*',
+    );
   }
 
   // Start the server.
